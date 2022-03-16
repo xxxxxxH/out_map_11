@@ -1,0 +1,4 @@
+
+rootProject.name = "cn.harry.potter"
+include ':app'
+include ':james'

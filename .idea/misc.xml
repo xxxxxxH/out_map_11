@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/workspace/out_map_11/app/src/main/res/layout/activity_main.xml" value="0.19701086956521738" />
+        <entry key="..\:/workspace/out_map_11/app/src/main/res/layout/layout_1.xml" value="0.358695652173913" />
+        <entry key="..\:/workspace/out_map_11/james/src/main/res/drawable/progress_bar_bg.xml" value="0.2405" />
+        <entry key="..\:/workspace/out_map_11/james/src/main/res/layout/dialog_btn.xml" value="0.358695652173913" />
+        <entry key="..\:/workspace/out_map_11/james/src/main/res/layout/dialog_common.xml" value="0.358695652173913" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.allattentionhere.fabulousfilter.AAH_FilterView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/dialog_title" />
+
+        <include layout="@layout/dilaog_content" />
+
+        <include layout="@layout/dialog_btn" />
+    </LinearLayout>
+</com.allattentionhere.fabulousfilter.AAH_FilterView>
