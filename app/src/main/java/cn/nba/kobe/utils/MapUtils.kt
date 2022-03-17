@@ -16,6 +16,9 @@ import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
+import gov.nasa.worldwind.WorldWind
+import gov.nasa.worldwind.WorldWindow
+import gov.nasa.worldwind.geom.Camera
 
 val COLORS = arrayOf(
     "#E6F44336",
@@ -87,4 +90,36 @@ fun MapView.setCamera(center: Point) {
             zoom(14.0)
         }
     )
+}
+
+fun MapView.loadStyle(style: String) {
+    getMapboxMap().apply {
+        setCamera(cameraOptions {
+            zoom(14.0)
+        })
+        loadStyleUri(style) {
+            addMyLocationPoint()
+        }
+    }
+}
+
+private fun MapView.addMyLocationPoint() {
+    location.updateSettings {
+        enabled = true
+        pulsingEnabled = true
+    }
+}
+
+fun resetEarthCamera(
+    camera: Camera,
+    worldWindow: WorldWindow,
+    currentLat: Double,
+    currentLng: Double,
+    currentAltitude: Double
+) {
+    camera.set(currentLat, currentLng, currentAltitude, WorldWind.ABSOLUTE, 0.0, 0.0, 1.0)
+    worldWindow.globe?.let {
+        worldWindow.navigator.setAsCamera(it, camera)
+        worldWindow.requestRedraw()
+    }
 }

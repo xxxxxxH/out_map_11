@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
 import cn.nba.kobe.R
+import cn.nba.kobe.utils.loadStyle
 import cn.nba.kobe.utils.setCamera
 import cn.nba.kobe.utils.setCameraChangeListener
 import cn.nba.kobe.utils.setCurrentLocation
@@ -15,6 +16,7 @@ import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
+import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.activity_street.*
 
 @SuppressLint("ClickableViewAccessibility")
@@ -40,7 +42,7 @@ class StreetActivity : AppCompatActivity() {
                     mapview2.setCamera(Point.fromLngLat(d, d2))
                 }
             }
-            it.getMapboxMap().loadStyleUri(Style.OUTDOORS)
+            it.loadStyle(Style.OUTDOORS)
         }
 
         mapview2.let {
@@ -59,7 +61,25 @@ class StreetActivity : AppCompatActivity() {
                     mapview1.setCamera(Point.fromLngLat(lng, lat))
                 }
             }
-            it.getMapboxMap().loadStyleUri(Style.OUTDOORS)
+            it.loadStyle(Style.SATELLITE_STREETS)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapview1.onStart()
+        mapview2.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapview1.onStop()
+        mapview2.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapview1.onDestroy()
+        mapview2.onDestroy()
     }
 }

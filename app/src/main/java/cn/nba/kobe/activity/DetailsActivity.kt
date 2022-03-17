@@ -1,13 +1,14 @@
 package cn.nba.kobe.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import cn.nba.james.funcCreateLoading
 import cn.nba.kobe.R
 import cn.nba.kobe.adapter.Item1
 import cn.nba.kobe.entity.DataEntity
-import cn.nba.kobe.utils.addMarker
-import cn.nba.kobe.utils.moveMap
+import cn.nba.kobe.utils.*
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.TypeReference
 import com.lzy.okgo.OkGo
@@ -15,14 +16,9 @@ import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
 import com.mapbox.geojson.Point
 import com.mapbox.maps.Style
-import com.mapbox.maps.dsl.cameraOptions
-import com.mapbox.maps.plugin.animation.flyTo
-import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import kotlinx.android.synthetic.main.activity_details.*
-import kotlinx.android.synthetic.main.activity_details.recycler
-import kotlinx.android.synthetic.main.activity_inter.*
 
 class DetailsActivity : AppCompatActivity() {
 
@@ -36,25 +32,29 @@ class DetailsActivity : AppCompatActivity() {
         mapview.getMapboxMap()
     }
 
+    private val loadingView by lazy {
+        funcCreateLoading()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
-        if (bigPlace == null)finish()
+        loadingView.show()
+        if (bigPlace == null) finish()
         mapview.let {
-            mapBox.addOnMapClickListener {
-                mapBox.flyTo(cameraOptions {
-                    center(it)
-                    zoom(14.0)
-                })
-                true
+            it.setCurrentLocation()
+            it.setCameraClick { lng, lat ->
+                it.moveMap(Point.fromLngLat(lng, lat))
             }
-            mapBox.loadStyleUri(Style.OUTDOORS)
+            it.loadStyle(Style.OUTDOORS)
         }
-        OkGo.get<String>(url + bigPlace.key + ".json").execute(object :StringCallback(){
+        OkGo.get<String>(url + bigPlace.key + ".json").execute(object : StringCallback() {
             override fun onSuccess(response: Response<String>?) {
                 val data = ArrayList<DataEntity>()
                 val map: Map<String, DataEntity> =
-                    JSON.parseObject(response?.body()?.toString(), object : TypeReference<Map<String, DataEntity>>() {})
+                    JSON.parseObject(
+                        response?.body()?.toString(),
+                        object : TypeReference<Map<String, DataEntity>>() {})
                 val m: Set<Map.Entry<String, DataEntity>> = map.entries
                 val it: Iterator<Map.Entry<String, DataEntity>> = m.iterator()
                 do {
@@ -84,13 +84,42 @@ class DetailsActivity : AppCompatActivity() {
                 itemAdapter.add(items)
                 recycler.adapter = fastAdapter
                 recycler.layoutManager = LinearLayoutManager(this@DetailsActivity)
-                fastAdapter.onClickListener = {view, adapter, item, position ->
+                fastAdapter.onClickListener = { view, adapter, item, position ->
                     val entity = data[position]
                     mapview.moveMap(Point.fromLngLat(entity.lng, entity.lat))
                     mapview.addMarker(Point.fromLngLat(entity.lng, entity.lat))
                     false
                 }
             }
+
+            override fun onError(response: Response<String>?) {
+                super.onError(response)
+                loadingView.hide()
+                Toast.makeText(this@DetailsActivity, "No data", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+
+            override fun onFinish() {
+                super.onFinish()
+                loadingView.hide()
+            }
         })
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapview.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapview.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapview.onDestroy()
     }
 }

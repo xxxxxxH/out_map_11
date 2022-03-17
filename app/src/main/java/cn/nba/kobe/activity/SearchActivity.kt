@@ -2,7 +2,9 @@ package cn.nba.kobe.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import cn.nba.james.funcCreateLoading
 import cn.nba.kobe.R
 import com.mapbox.geojson.Point
 import com.mapbox.search.*
@@ -15,6 +17,9 @@ class SearchActivity : AppCompatActivity() {
     val searchEngine by lazy {
         MapboxSearchSdk.getSearchEngine()
     }
+    private val loadingView by lazy {
+        funcCreateLoading()
+    }
     private val searchCallback = object : SearchSelectionCallback, SearchMultipleSelectionCallback {
         override fun onCategoryResult(
             suggestion: SearchSuggestion,
@@ -24,7 +29,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         override fun onError(e: Exception) {
-//            hideToastBox()
+            loadingView.hide()
         }
 
         override fun onResult(
@@ -32,12 +37,11 @@ class SearchActivity : AppCompatActivity() {
             results: List<SearchResult>,
             responseInfo: ResponseInfo
         ) {
-//            hideToastBox()
+            loadingView.hide()
             results.firstOrNull()?.coordinate?.let {
-//                jumpByPoint(it)
                 route2Result(it)
             } ?: kotlin.run {
-
+                Toast.makeText(this@SearchActivity,"No suggestions found",Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -49,7 +53,8 @@ class SearchActivity : AppCompatActivity() {
             suggestions.firstOrNull()?.let {
                 searchEngine.select(suggestions, this)
             } ?: kotlin.run {
-//                hideToastBox()
+                loadingView.hide()
+                Toast.makeText(this@SearchActivity,"No suggestions found",Toast.LENGTH_SHORT).show()
             }
         }
     }

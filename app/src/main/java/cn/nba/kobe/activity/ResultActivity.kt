@@ -3,6 +3,7 @@ package cn.nba.kobe.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import cn.nba.kobe.R
+import cn.nba.kobe.utils.*
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.Style
@@ -29,29 +30,13 @@ class ResultActivity : AppCompatActivity() {
             finish()
         }
         mapView.let {
-            it.apply {
-                val listener = object : OnIndicatorPositionChangedListener {
-                    override fun onIndicatorPositionChanged(point: Point) {
-                        setTag(R.id.appViewMyLocationId, point)
-                        getMapboxMap().setCamera(CameraOptions.Builder().center(point).build())
-                        gestures.focalPoint = getMapboxMap().pixelForCoordinate(point)
-                        location.removeOnIndicatorPositionChangedListener(this)
-                    }
-                }
-                location.addOnIndicatorPositionChangedListener(listener)
-                it.getMapboxMap().addOnMapClickListener {
-                    this.getMapboxMap().flyTo(cameraOptions {
-                        center(Point.fromLngLat(lng, lat))
-                        zoom(14.0)
-                    })
-                    true
-                }
-                this.getMapboxMap().loadStyleUri(Style.OUTDOORS)
-                Point.fromLngLat(lng, lat).let {
-
-                }
+            it.setCurrentLocation()
+            it.setCameraClick { lng, lat ->
+                it.moveMap(Point.fromLngLat(lng, lat))
             }
-
+            it.loadStyle(Style.OUTDOORS)
+            it.addMarker(Point.fromLngLat(lng, lat))
+            it.moveMap(Point.fromLngLat(lng, lat))
         }
     }
 }

@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import cn.nba.james.funcCreateLoading
 import cn.nba.kobe.R
 import cn.nba.kobe.adapter.Item1
 import cn.nba.kobe.entity.DataEntity
@@ -17,14 +18,19 @@ import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.rw.loadingdialog.LoadingView
 import kotlinx.android.synthetic.main.activity_inter.*
 
 class InterActivity : AppCompatActivity() {
+    private val loadingView by lazy {
+        funcCreateLoading()
+    }
     val url = "https://www.google.com/streetview/feed/gallery/data.json"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inter)
+        loadingView.show()
         OkGo.get<String>(url).execute(object : StringCallback() {
             override fun onSuccess(response: Response<String>?) {
                 val data = ArrayList<DataEntity>()
@@ -67,12 +73,25 @@ class InterActivity : AppCompatActivity() {
                 itemAdapter.add(items)
                 recycler.adapter = fastAdapter
                 recycler.layoutManager = LinearLayoutManager(this@InterActivity)
+                loadingView.hide()
                 fastAdapter.onClickListener = { view, adapter, item, position ->
                     val i = Intent(this@InterActivity, DetailsActivity::class.java)
                     i.putExtra("data",data[position])
                     startActivity(i)
                     false
                 }
+            }
+
+            override fun onError(response: Response<String>?) {
+                super.onError(response)
+                loadingView.hide()
+                Toast.makeText(this@InterActivity,"No data", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+
+            override fun onFinish() {
+                super.onFinish()
+                loadingView.hide()
             }
         })
     }

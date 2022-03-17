@@ -73,7 +73,7 @@ fun AppCompatActivity.funcInitSDK(){
 fun AppCompatActivity.funcCreateLoading(): LoadingView {
     return LoadingView.Builder(this)
         .setProgressColorResource(R.color.teal_200)
-        .setBackgroundColorRes(R.color.white)
+        .setBackgroundColorRes(android.R.color.transparent)
         .setProgressStyle(LoadingView.ProgressStyle.HORIZONTAL)
         .setCustomMargins(0, 0, 0, 0)
         .attachTo(this)
