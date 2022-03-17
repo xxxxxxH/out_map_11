@@ -26,6 +26,11 @@ abstract class BaseApp : Application() {
             .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
             .hostnameVerifier { hostname, session -> true }.build()
         OkGo.getInstance().init(this).okHttpClient = builder
+        init()
+    }
+
+    open fun init(){
+
     }
 
     abstract fun getAppId(): String

@@ -2,6 +2,8 @@ package cn.nba.kobe
 
 import android.Manifest
 import cn.nba.james.BaseApp
+import com.mapbox.android.core.location.LocationEngineProvider
+import com.mapbox.search.MapboxSearchSdk
 import com.tencent.mmkv.MMKV
 import java.util.*
 
@@ -41,6 +43,15 @@ class IApplication:BaseApp() {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    }
+
+    override fun init() {
+        super.init()
+        MapboxSearchSdk.initialize(
+            application = this,
+            accessToken = getString(R.string.mapbox_access_token),
+            locationEngine = LocationEngineProvider.getBestLocationEngine(this)
         )
     }
 }

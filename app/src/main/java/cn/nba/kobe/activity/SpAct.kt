@@ -1,10 +1,8 @@
-package cn.nba.kobe.acvitity
+package cn.nba.kobe.activity
 
 import android.content.Intent
-import android.os.Bundle
 import cn.nba.james.ActivityB
 import cn.nba.james.funcCreateLoading
-import cn.nba.james.requestPermissions
 import cn.nba.kobe.R
 
 class SpAct : ActivityB(R.layout.layout_1) {
